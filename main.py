@@ -139,7 +139,7 @@ def fill_search_fields(wait_minutes):
                     # Fill name field
                     try:
                         name_field = wait.until(EC.presence_of_element_located(
-                            (By.XPATH, "//input[translate(@type,'TEXT','text')='text' and translate(@name,'NAME','name')='name']")))
+                            (By.XPATH, "//input[translate(@type,'TEXT','text')='text']")))
                         name_field.clear()
                         for char in random_name:
                             name_field.send_keys(char)
@@ -151,7 +151,7 @@ def fill_search_fields(wait_minutes):
                     # Fill phone field    
                     try:
                         phone_field = wait.until(EC.presence_of_element_located(
-                            (By.XPATH, "//input[translate(@type,'TEL','tel')='tel' and translate(@name,'PHONE','phone')='phone']")))
+                            (By.XPATH, "//input[translate(@type,'TEL','tel')='tel']")))
                         phone_field.clear()
                         phone = get_random_phone()
                         for char in phone:
