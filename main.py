@@ -95,6 +95,19 @@ def get_random_phone():
         return "+380994556191"  # Fallback if file not found
     return "+380994556191"  # Fallback if file is empty
 
+
+def get_random_city():
+    try:
+        with open('cities.txt', 'r') as f:
+            cities = [line.strip() for line in f if line.strip()]
+            if cities:
+                return random.choice(cities)
+    except FileNotFoundError:
+        log_and_print("Warning: cities.txt not found", 'warning')
+        return "Київ"  # Fallback if file not found
+    return "Київ"  # Fallback if file is empty
+
+
 def fill_search_fields(wait_minutes):
     setup_logging()  # Initialize logging
     while True:
@@ -111,6 +124,7 @@ def fill_search_fields(wait_minutes):
                 
                 try:
                     random_name = get_random_name()
+                    radnom_city = get_random_city()
                     driver.get(site)
                     wait = WebDriverWait(driver, 10)
                     
@@ -135,11 +149,24 @@ def fill_search_fields(wait_minutes):
                                     break
                     except Exception as e:
                         log_and_print(f"No select elements found or error handling selects on {site}: {e}", 'error')
-                    
+                                        
+                    # Fill city field
+                    try:
+                        city_field = wait.until(EC.presence_of_element_located(
+                            (By.XPATH, "//input[@type='text' and @name='city']")))
+                        city_field.clear()
+                        print(radnom_city)
+                        for char in radnom_city:
+                            city_field.send_keys(char)
+                            time.sleep(random.uniform(0.1, 0.2))
+                        log_and_print(f"Filled city field on: {site}")
+                    except Exception as e:
+                        log_and_print(f"Could not find or fill city field on {site}: {e}", 'error')
+
                     # Fill name field
                     try:
                         name_field = wait.until(EC.presence_of_element_located(
-                            (By.XPATH, "//input[translate(@type,'TEXT','text')='text']")))
+                            (By.XPATH, "//input[@type='text' and (@name='name' or @name='username' or @name='Name')]")))
                         name_field.clear()
                         for char in random_name:
                             name_field.send_keys(char)
