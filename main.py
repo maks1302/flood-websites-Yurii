@@ -98,7 +98,7 @@ def get_random_phone():
 
 def get_random_city():
     try:
-        with open('cities.txt', 'r') as f:
+        with open('cities.txt', 'r', encoding='utf-8') as f:
             cities = [line.strip() for line in f if line.strip()]
             if cities:
                 return random.choice(cities)
