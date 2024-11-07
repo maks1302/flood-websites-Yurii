@@ -139,14 +139,16 @@ def fill_search_fields(wait_minutes):
                         for select_element in select_elements:
                             select = Select(select_element)
                             options = select.options
-                            for option in options:
-                                if "обрати" in option.text.lower():
-                                    valid_options = [opt for opt in options if "обрати" not in opt.text.lower()]
-                                    if valid_options:
-                                        random_option = random.choice(valid_options)
-                                        select.select_by_visible_text(random_option.text)
-                                        log_and_print(f"Selected option '{random_option.text}' from dropdown on: {site}")
-                                    break
+                            for i in options:
+                                print(i.text) 
+                            valid_options = [opt for opt in options[1:]]
+                            for i in valid_options:
+                                print(i.text) 
+                            if valid_options:
+                                random_option = random.choice(valid_options)
+                                select.select_by_visible_text(random_option.text)
+                                log_and_print(f"Selected option '{random_option.text}' from dropdown on: {site}")
+                                break
                     except Exception as e:
                         log_and_print(f"No select elements found or error handling selects on {site}: {e}", 'error')
                                         
@@ -196,6 +198,7 @@ def fill_search_fields(wait_minutes):
                                 (By.XPATH, "//input[@type='tel']/following::button[1]")
                             )
                         )
+                        print(button.text)
                         time.sleep(random.uniform(0.5, 1))
                         driver.execute_script("arguments[0].click();", button)
                         log_and_print(f"Clicked button on: {site}")
