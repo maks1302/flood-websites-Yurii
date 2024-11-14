@@ -5,6 +5,10 @@ from selenium import webdriver
 from extention import background_js, manifest_json
 
 
+EXTENSIONS_DIR = 'extentions'
+if not os.path.exists(EXTENSIONS_DIR):
+    os.makedirs(EXTENSIONS_DIR)
+
 def parse_proxy_string(proxy_str):
     """
     Parse proxy string in format host:port:username:password
@@ -17,28 +21,26 @@ def parse_proxy_string(proxy_str):
 
 
 # Load proxy configuration from txt file
-PROXY_FILE = 'proxy.txt'
 
-try:
-    with open(PROXY_FILE, 'r') as f:
-        proxy_lines = f.readlines()
-        proxy_str = random.choice([line for line in proxy_lines if line.strip()])
-        PROXY_HOST, PROXY_PORT, PROXY_USERNAME, PROXY_PASSWORD = parse_proxy_string(proxy_str)
-except FileNotFoundError:
-    pass
+def parse_proxy():
+    try:
+        PROXY_FILE = 'proxy.txt'
+        with open(PROXY_FILE, 'r') as f:
+            proxy_lines = f.readlines()
+            proxy_str = random.choice([line for line in proxy_lines if line.strip()])
+            PROXY_HOST, PROXY_PORT, PROXY_USERNAME, PROXY_PASSWORD = parse_proxy_string(proxy_str)
+            return PROXY_HOST, PROXY_PORT, PROXY_USERNAME, PROXY_PASSWORD
+    except FileNotFoundError:
+        return None
+
 # Create extensions directory if it doesn't exist
-EXTENSIONS_DIR = 'extentions'
-if not os.path.exists(EXTENSIONS_DIR):
-    os.makedirs(EXTENSIONS_DIR)
-
 
 def get_proxy():
     """
     Configure and return a Chrome WebDriver instance with proxy authentication
     """
     # Generate proxy authentication background script
-    proxy_background = background_js % (PROXY_HOST, PROXY_PORT, PROXY_USERNAME, PROXY_PASSWORD)
-    
+    proxy_background = background_js % (parse_proxy())
     # Set up Chrome options
     chrome_options = webdriver.ChromeOptions()
     
@@ -50,7 +52,11 @@ def get_proxy():
     
     # Add extension to Chrome options
     chrome_options.add_extension(extension_path)
-    
+    # chrome_options.add_argument(f'user-agent={user_agent}')
+    # chrome_options.add_argument('--disable-blink-features=AutomationControlled')
+    # chrome_options.add_experimental_option('useAutomationExtension', False)
+    # chrome_options.add_experimental_option("excludeSwitches", ["enable-automation"])
+
+    # chrome_options.add_argument("--incognito")
     # Initialize and return WebDriver
-    driver = webdriver.Chrome(options=chrome_options)
-    return driver
+    return chrome_options
