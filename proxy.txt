@@ -1,10 +1,1 @@
-s-16228.sp5.ovh:11001:6Eph9wi_0:dPpCvcVRc6wx
-s-16228.sp5.ovh:11002:6Eph9wi_1:dPpCvcVRc6wx
-s-16228.sp5.ovh:11003:6Eph9wi_2:dPpCvcVRc6wx
-s-16228.sp5.ovh:11004:6Eph9wi_3:dPpCvcVRc6wx
-s-16228.sp5.ovh:11005:6Eph9wi_4:dPpCvcVRc6wx
-s-16228.sp5.ovh:11006:6Eph9wi_5:dPpCvcVRc6wx
-s-16228.sp5.ovh:11007:6Eph9wi_6:dPpCvcVRc6wx
-s-16228.sp5.ovh:11008:6Eph9wi_7:dPpCvcVRc6wx
-s-16228.sp5.ovh:11009:6Eph9wi_8:dPpCvcVRc6wx
-s-16228.sp5.ovh:11010:6Eph9wi_9:dPpCvcVRc6wx
+p.webshare.io:80:zgzpkvbb-rotate:hkdrlelqrkfy

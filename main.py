@@ -3,6 +3,7 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.support.ui import Select
+from selenium.webdriver.common.keys import Keys
 import time
 import random
 from manage_proxies import get_proxy
@@ -130,9 +131,13 @@ def fill_search_fields(wait_minutes):
                     driver.get(site)
                     wait = WebDriverWait(driver, 10)
                     
-                    # Simulate natural scrolling
+                    # Simulate natural scrolling down, up, and down again
                     time.sleep(random.uniform(1, 2))
-                    driver.execute_script("window.scrollBy(0, 400);")
+                    driver.execute_script("window.scrollBy(0, 1300);")
+                    time.sleep(random.uniform(0.5, 1))
+                    driver.execute_script("window.scrollBy(0, -400);")
+                    time.sleep(random.uniform(0.5, 1))
+                    driver.execute_script("window.scrollBy(0, 1000);")
                     time.sleep(random.uniform(0.5, 1))
                     
                     # Handle dropdowns
@@ -170,7 +175,7 @@ def fill_search_fields(wait_minutes):
                     # Fill name field
                     try:
                         name_field = wait.until(EC.presence_of_element_located(
-                            (By.XPATH, "//input[@type='text' and (@name='name' or @name='username' or @name='Name')]")))
+                            (By.XPATH, "//input[@type='text' and (@name='name' or @name='username' or @name='Name' or @name='fields[273045][value]')]")))
                         name_field.clear()
                         for char in random_name:
                             name_field.send_keys(char)
@@ -185,13 +190,17 @@ def fill_search_fields(wait_minutes):
                             (By.XPATH, "//input[translate(@type,'TEL','tel')='tel']")))
                         phone_field.clear()
                         phone = get_random_phone()
+                        print(phone)
+                        phone_field.send_keys(Keys.BACKSPACE)  # Press backspace once before entering number
+                        phone_field.send_keys(Keys.ARROW_RIGHT)  # Press backspace once before entering number
+                        phone_field.send_keys(Keys.ARROW_LEFT)  # Press backspace once before entering number
+
                         for char in phone:
                             phone_field.send_keys(char)
-                            time.sleep(random.uniform(0.1, 0.2))
+                            time.sleep(random.uniform(0.5, 0.9))
                         log_and_print(f"Filled phone field on: {site}")
                     except Exception as e:
                         log_and_print(f"Could not find or fill phone field on {site}: {e}", 'error')
-                        
                     # Click the button below the filled fields
                     try:
                         # Find the button element that appears after the input fields
@@ -202,13 +211,17 @@ def fill_search_fields(wait_minutes):
                         )
                         print(button.text)
                         time.sleep(random.uniform(0.5, 1))
+                        driver.execute_script("window.scrollBy(0, 200);")
+                        time.sleep(random.uniform(1, 2))
                         driver.execute_script("arguments[0].click();", button)
+                        time.sleep(random.uniform(1, 2))
+
+                        button.click()
                         log_and_print(f"Clicked button on: {site}")
                     except Exception as e:
                         log_and_print(f"Could not find or click button on {site}: {e}", 'error')
                     
                     time.sleep(random.uniform(5, 10))
-                    
                 except Exception as e:
                     log_and_print(f"Error processing {site}: {e}", 'error')
                     
