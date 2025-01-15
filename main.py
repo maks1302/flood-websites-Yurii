@@ -1,13 +1,15 @@
 from selenium import webdriver
 from selenium.webdriver.common.by import By
+from selenium.webdriver.common.keys import Keys
+from selenium.webdriver.support.ui import Select
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
-from selenium.webdriver.support.ui import Select
-from selenium.webdriver.common.keys import Keys
+
 import time
 import random
-from manage_proxies import get_proxy
 import logging
+
+from manage_proxies import get_proxy
 
 def setup_logging():
     logger = logging.getLogger('bot_logger')
@@ -110,14 +112,13 @@ def get_random_city():
     return "Київ"  # Fallback if file is empty
 
 
-def fill_search_fields(wait_minutes):
+def fill_search_fields(wait_minutes, mobile_browser):
     setup_logging()  # Initialize logging
     while True:
         try:
             log_and_print("\nStarting new cycle...")
-            chrome_options = get_proxy()
+            chrome_options = get_proxy(mobile_browser)
             driver = webdriver.Chrome(options=chrome_options)
-
             websites = get_websites()
             remaining_sites = websites.copy()
             
@@ -242,6 +243,8 @@ if __name__ == "__main__":
     log_and_print("Starting continuous website processing...")
     try:
         wait_minutes = float(input("Enter wait interval between cycles in minutes: "))
-        fill_search_fields(wait_minutes)
+        mobile_browser = str(input("Do you want to launch the bot with the mobile version browser? if yes - type y, if no - press any other key: "))
+
+        fill_search_fields(wait_minutes, mobile_browser)
     except KeyboardInterrupt:
         log_and_print("\nProgram terminated by user.")

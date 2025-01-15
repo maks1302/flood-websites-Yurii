@@ -35,7 +35,7 @@ def parse_proxy():
 
 # Create extensions directory if it doesn't exist
 
-def get_proxy():
+def get_proxy(mobile_browser):
     """
     Configure and return a Chrome WebDriver instance with proxy authentication
     """
@@ -43,6 +43,8 @@ def get_proxy():
     proxy_background = background_js % (parse_proxy())
     # Set up Chrome options
     chrome_options = webdriver.ChromeOptions()
+    if mobile_browser.lower() == 'y':
+        chrome_options.add_experimental_option("mobileEmulation", {"deviceName": "iPhone X"})
     
     # Create and load proxy authentication extension
     extension_path = os.path.join(EXTENSIONS_DIR, 'proxy_auth_plugin.zip')
