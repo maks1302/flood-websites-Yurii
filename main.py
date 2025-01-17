@@ -176,7 +176,7 @@ def fill_search_fields(wait_minutes, mobile_browser):
                     # Fill name field
                     try:
                         name_field = wait.until(EC.presence_of_element_located(
-                            (By.XPATH, "//input[@type='text' and (@name='name' or @name='username' or @name='Name' or @name='fields[273045][value]')]")))
+                            (By.XPATH, "//input[@type='text' and (@name='name' or @name='name1' or @name='username' or @name='Name' or @name='fields[273045][value]')]")))
                         name_field.clear()
                         for char in random_name:
                             name_field.send_keys(char)
@@ -188,7 +188,7 @@ def fill_search_fields(wait_minutes, mobile_browser):
                     # Fill phone field    
                     try:
                         phone_field = wait.until(EC.presence_of_element_located(
-                            (By.XPATH, "//input[translate(@type,'TEL','tel')='tel']")))
+                            (By.XPATH, "//input[translate(@type,'TEL','tel')='tel' or (@type='text' and @name='phone')]")))
                         phone_field.clear()
                         phone = get_random_phone()
                         print(phone)
@@ -207,7 +207,7 @@ def fill_search_fields(wait_minutes, mobile_browser):
                         # Find the button element that appears after the input fields
                         button = wait.until(
                             EC.presence_of_element_located(
-                                (By.XPATH, "//input[@type='tel']/following::button[1]")
+                                (By.XPATH, "//input[translate(@type,'TEL','tel')='tel' or (@type='text' and @name='phone')]/following::button[1]")
                             )
                         )
                         print(button.text)
@@ -220,6 +220,7 @@ def fill_search_fields(wait_minutes, mobile_browser):
                         button.click()
                         log_and_print(f"Clicked button on: {site}")
                     except Exception as e:
+                        
                         log_and_print(f"Could not find or click button on {site}: {e}", 'error')
                     
                     time.sleep(random.uniform(5, 10))
