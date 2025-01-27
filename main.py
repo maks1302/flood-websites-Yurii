@@ -248,4 +248,4 @@ if __name__ == "__main__":
 
         fill_search_fields(wait_minutes, mobile_browser)
     except KeyboardInterrupt:
-        log_and_print("\nProgram terminated by user.")
+        log_and_print("\nProgram terminated by user")
