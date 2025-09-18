@@ -1,8 +1,6 @@
 import os
-import zipfile
 import random
 from selenium import webdriver
-from extention import background_js, manifest_json
 
 
 EXTENSIONS_DIR = 'extentions'
@@ -33,32 +31,30 @@ def parse_proxy():
     except FileNotFoundError:
         return None
 
-# Create extensions directory if it doesn't exist
-
 def get_proxy(mobile_browser):
     """
-    Configure and return a Chrome WebDriver instance with proxy authentication
+    Build Chrome options and selenium-wire proxy options for authenticated HTTP proxies.
+    Returns: (chrome_options, seleniumwire_options)
     """
-    # Generate proxy authentication background script
-    proxy_background = background_js % (parse_proxy())
-    # Set up Chrome options
+    creds = parse_proxy()
     chrome_options = webdriver.ChromeOptions()
     if mobile_browser.lower() == 'y':
         chrome_options.add_experimental_option("mobileEmulation", {"deviceName": "iPhone X"})
-    
-    # Create and load proxy authentication extension
-    extension_path = os.path.join(EXTENSIONS_DIR, 'proxy_auth_plugin.zip')
-    with zipfile.ZipFile(extension_path, 'w') as zip_file:
-        zip_file.writestr("manifest.json", manifest_json)
-        zip_file.writestr("background.js", proxy_background)
-    
-    # Add extension to Chrome options
-    chrome_options.add_extension(extension_path)
-    # chrome_options.add_argument(f'user-agent={user_agent}')
-    # chrome_options.add_argument('--disable-blink-features=AutomationControlled')
-    # chrome_options.add_experimental_option('useAutomationExtension', False)
-    # chrome_options.add_experimental_option("excludeSwitches", ["enable-automation"])
 
-    # chrome_options.add_argument("--incognito")
-    # Initialize and return WebDriver
-    return chrome_options
+    if not creds:
+        # No proxy file found or empty; return options without proxy
+        return chrome_options, {}
+
+    PROXY_HOST, PROXY_PORT, PROXY_USERNAME, PROXY_PASSWORD = creds
+
+    proxy_url = f"http://{PROXY_USERNAME}:{PROXY_PASSWORD}@{PROXY_HOST}:{PROXY_PORT}"
+    seleniumwire_options = {
+        'proxy': {
+            'http': proxy_url,
+            'https': proxy_url,
+            'no_proxy': 'localhost,127.0.0.1'
+        }
+    }
+
+    # You can still add other Chrome flags here if needed, but proxy auth is handled by selenium-wire.
+    return chrome_options, seleniumwire_options

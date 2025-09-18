@@ -1,4 +1,4 @@
-from selenium import webdriver
+from seleniumwire import webdriver as wire_webdriver
 from selenium.webdriver.common.by import By
 from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.support.ui import Select
@@ -117,8 +117,8 @@ def fill_search_fields(wait_minutes, mobile_browser):
     while True:
         try:
             log_and_print("\nStarting new cycle...")
-            chrome_options = get_proxy(mobile_browser)
-            driver = webdriver.Chrome(options=chrome_options)
+            chrome_options, sw_options = get_proxy(mobile_browser)
+            driver = wire_webdriver.Chrome(options=chrome_options, seleniumwire_options=sw_options)
             websites = get_websites()
             remaining_sites = websites.copy()
             
