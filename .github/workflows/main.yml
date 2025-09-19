@@ -45,7 +45,8 @@ jobs:
 
         # Include Selenium Wire data files (e.g. CA certificate ca.crt)
         datas = collect_data_files('seleniumwire')
-        datas += copy_metadata('seleniumwire')
+        # Distribution name uses a hyphen on PyPI
+        datas += copy_metadata('selenium-wire')
         """
         This hook ensures selenium-wire's bundled certificate and other data
         are packaged inside the one-file executable, preventing runtime errors
