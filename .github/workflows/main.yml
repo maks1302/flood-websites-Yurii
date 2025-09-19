@@ -24,8 +24,40 @@ jobs:
         pip install -r requirements.txt
         pip install pyinstaller
 
+    - name: Create PyInstaller hooks for Selenium packages
+      shell: pwsh
+      run: |
+        New-Item -ItemType Directory -Force -Path hooks | Out-Null
+        @'
+from PyInstaller.utils.hooks import collect_data_files, copy_metadata
+
+# Ensure Selenium JS resources are included
+datas = collect_data_files('selenium')
+datas += copy_metadata('selenium')
+"""
+This hook helps PyInstaller collect Selenium's package data
+(e.g. JavaScript files used by the remote WebDriver implementation).
+"""
+'@ | Set-Content -Path hooks/hook-selenium.py -Encoding UTF8
+
+        @'
+from PyInstaller.utils.hooks import collect_data_files, copy_metadata
+
+# Include Selenium Wire data files (e.g. CA certificate ca.crt)
+datas = collect_data_files('seleniumwire')
+datas += copy_metadata('seleniumwire')
+"""
+This hook ensures selenium-wire's bundled certificate and other data
+are packaged inside the one-file executable, preventing runtime errors
+like missing ca.crt under _MEI*/seleniumwire/.
+"""
+'@ | Set-Content -Path hooks/hook-seleniumwire.py -Encoding UTF8
+
     - name: Build EXE
-      run: pyinstaller --onefile main.py  # Adjust script name
+      run: |
+        pyinstaller --noconfirm --onefile \
+          --additional-hooks-dir hooks \
+          main.py
 
     - name: Upload EXE artifact
       uses: actions/upload-artifact@v4
